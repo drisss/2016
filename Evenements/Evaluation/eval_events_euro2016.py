@@ -9,6 +9,7 @@ import os.path
 from datetime import datetime, timedelta
 import re
 from optparse import OptionParser
+from tabulate import tabulate
 
       
 
@@ -68,12 +69,13 @@ class Event(object):
                  and self.date == other.date
                  and self.type == other.type)             
       
-      if(Event.strictness == 1):
-         isEqual = isEqual and abs((self.time - other.time).total_seconds()) <= timedelta(minutes=2).total_seconds()
+      if(Event.strictness > 0):
          isEqual = (isEqual and
                     ((self.annotations is None and other.annotations is None)
                      or ((self.annotations is not None and other.annotations is not None) and
                          (set(self.annotations) == set(other.annotations)))))
+      if(Event.strictness > 1):
+         isEqual = isEqual and abs((self.time - other.time).total_seconds()) <= timedelta(minutes=2).total_seconds()
       
       return isEqual
 
@@ -102,27 +104,33 @@ def evaluate(gold, pred, strict):
    f1 = 2*precision*recall / (precision+recall) if precision+recall>0 else 0
    return (precision, recall, f1)
 
+
 def print_scores(header, scores):
    print header
    print '-' * len(header)
-   print 'Precision = {0} %'.format(scores[0]*100)
-   print 'Recall = {0} %'.format(scores[1]*100)
-   print 'F1-measure = {0} %'.format(scores[2]*100)
+   print 'Precision = {0:.2f} %'.format(scores[0]*100)
+   print 'Recall = {0:.2f} %'.format(scores[1]*100)
+   print 'F1-measure = {0:.2f} %'.format(scores[2]*100)
    print '-' * len(header)
 
 
+def main(opts, args):
+   gold_events = parse_event_file(args[0])
+   pred_events = parse_event_file(args[1])
+   
+   return (('', 'Strict',) + evaluate(gold_events, pred_events, 2),
+          (opts.system_name, 'Intermediate',) + evaluate(gold_events, pred_events, 1),
+          ('', 'Loose',) + evaluate(gold_events, pred_events, 0))
+   
 
 if __name__ == "__main__":
    parser = OptionParser('''%prog gold prediction''')
+   parser.add_option('-s', '--system', dest='system_name', default='Default')
    opts, args = parser.parse_args()
    if len(args) < 2:
       parser.print_usage()
       sys.exit(1)
    
-   gold_events = parse_event_file(args[0])
-   pred_events = parse_event_file(args[1])
-
-   print_scores('Strict evaluation', evaluate(gold_events, pred_events, 1))
-   print_scores('Loose evaluation', evaluate(gold_events, pred_events, 0))
-   
+   scores = main(opts, args)
+   print tabulate(scores, ('System', 'Evaluation', 'Precision', 'Recall', 'F1-measure'))
    
