@@ -30,25 +30,26 @@ def token_name(name):
 
 def get_players_in_tweet(tweet, players):
     tweet_players = []
-
+    tknzr = TweetTokenizer()
     list_token = tknzr.tokenize(tweet)
 
     for token in list_token:
         # line = line[:-1]
         last_name = remove_accents(token)
-        last_name = last_name.tolower()
+        last_name = last_name.lower()
 
         last_name = re.sub(r'([^aeuiyo])([aeuiyo])[aeuiyo]+([^aeuiyo]*)$',
                            r'\g<1><2><3>', last_name, flags=re.I)
 
         for player in players:
-            if last_name in player.getLastName():
+            if last_name == player.getLastName():
                 tweet_players .append(player)
 
     return tweet_players
 
 
 def get_teams_in_tweet(tweet, teams):
+    tknzr = TweetTokenizer()
     tweet_teams = []
 
     list_token = tknzr.tokenize(tweet)
@@ -56,22 +57,14 @@ def get_teams_in_tweet(tweet, teams):
     for token in list_token:
         # line = line[:-1]
         name = remove_accents(token)
-        name = name.tolower()
+        name = name.lower()
         name = re.sub(r'([^aeuiyo])([aeuiyo])[aeuiyo]+([^aeuiyo]*)$',
                       r'\g<1><2><3>', name, flags=re.I)
 
         for team in teams:
-            if name in team.getName():
+            if name == team.getName():
                 tweet_teams.append(team)
 
     return tweet_teams
 
 
-if __main__ == "__main__":
-
-    f_tweets = codecs.open(sys.argv[2], "r", "utf-8")
-    f_out = codecs.open(sys.argv[3], "w", "utf-8")
-    count_per = 0
-    sentence = ""
-
-    tknzr = TweetTokenizer()
