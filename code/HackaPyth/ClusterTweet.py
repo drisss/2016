@@ -1,10 +1,10 @@
 import os
-from Tweet import Tweet
-from Player import Player
-from Event import Event
-from TSVreader import read_tsv_player_file, read_tsv_tweet_file, read_tsv_events_file
+# from Tweet import Tweet
+# from Player import Player
+# from Event import Event
+from TSVreader import read_tsv_player_file, read_tsv_tweet_file  # read_tsv_events_file
 import time
-from nltk.tokenize import TweetTokenizer
+# from nltk.tokenize import TweetTokenizer
 
 __author__ = 'driss'
 
@@ -26,38 +26,38 @@ def print_cluster_tweets(tweets, match_fpath):
     if not os.path.exists(team_dirpath):
         os.makedirs(team_dirpath)
 
-    tweets_with_no_player = []
-    tweets_with_a_team_no_player = []
-    tweets_with_single_players = []
-    tweets_with_two_players = []
-    tweets_with_many_players = []
+    no_player_tweets = []
+    only_team_tweets = []
+    one_player_tweets = []
+    two_players_tweets = []
+    many_players_tweets = []
 
     for tweet in tweets:
         if len(tweet.players) == 0:
             if len(tweet.teams) == 1:
-                tweets_with_a_team_no_player.append(tweet)
+                only_team_tweets.append(tweet)
             else:
-                tweets_with_no_player.append(tweet)
+                no_player_tweets.append(tweet)
 
         elif len(tweet.players) == 1:
-            tweets_with_single_players.append(tweet)
+            one_player_tweets.append(tweet)
 
         elif len(tweet.players) == 2 and (tweet.getPlayer1().getTeam() == tweet.getPlayer2().getTeam()):
-            tweets_with_two_players.append(tweet)
+            two_players_tweets.append(tweet)
         else:
-            tweets_with_many_players.append(tweet)
+            many_players_tweets.append(tweet)
 
-    print("tweets_with_a_team_no_player:", len(tweets_with_a_team_no_player))
-    print("tweets_with_no_player :", len(tweets_with_no_player))
-    print("tweets_with_single_players: ", len(tweets_with_single_players))
-    print("tweets_with_two_players:", len(tweets_with_two_players))
-    print("tweets_with_many_players:", len(tweets_with_many_players))
+    print("only_team_tweets:", len(only_team_tweets))
+    print("no_player_tweets :", len(no_player_tweets))
+    print("one_player_tweets: ", len(one_player_tweets))
+    print("two_players_tweets:", len(two_players_tweets))
+    print("many_players_tweets:", len(many_players_tweets))
 
-    print_tweets_in_file(tweets_with_no_player, os.path.join(team_dirpath, "tweets_with_no_player.tsv"))
-    print_tweets_in_file(tweets_with_a_team_no_player, os.path.join(team_dirpath,"tweets_with_a_team_no_player.tsv"))
-    print_tweets_in_file(tweets_with_single_players, os.path.join(team_dirpath,"tweets_with_single_players.tsv"))
-    print_tweets_in_file(tweets_with_two_players, os.path.join(team_dirpath,"tweets_with_two_players.tsv"))
-    print_tweets_in_file(tweets_with_many_players, os.path.join(team_dirpath,"tweets_with_many_players.tsv"))
+    print_tweets_in_file(no_player_tweets, os.path.join(team_dirpath, "no_player_tweets.tsv"))
+    print_tweets_in_file(only_team_tweets, os.path.join(team_dirpath, "only_team_tweets.tsv"))
+    print_tweets_in_file(one_player_tweets, os.path.join(team_dirpath, "one_player_tweets.tsv"))
+    print_tweets_in_file(two_players_tweets, os.path.join(team_dirpath, "two_players_tweets.tsv"))
+    print_tweets_in_file(many_players_tweets, os.path.join(team_dirpath, "many_players_tweets.tsv"))
 
 
 def print_tweets_in_file(tweets, tweets_fpath):
@@ -69,7 +69,7 @@ def print_tweets_in_file(tweets, tweets_fpath):
 
 def parse_dir_match(match_dirpath):
 
-    events = read_tsv_events_file("../../Data/events/event_types.tsv")
+    # events = read_tsv_events_file("../../Data/events/event_types.tsv")
 
     fname_lst = [f for f in os.listdir(match_dirpath)
                  if not f.startswith('.')]  # Remove hidden files
@@ -102,5 +102,3 @@ if __name__ == "__main__":
     # for player in players :
     #    player.print_player()
     #    teams.add(player.team)
-
-
