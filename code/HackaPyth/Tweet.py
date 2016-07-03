@@ -26,18 +26,20 @@ class Tweet:
         csv_wr = csv.writer(f, delimiter='\t')
         csv_wr.writerow(list_param)
 
-    def print_in_tsv_file(self, f,event):
-        if len(self.players == 0):
-            list_param = [self.date, event.type]
-        if len(self.players == 1):
+    def print_in_tsv_annot(self, f, event):
+        if len(self.players) == 0:
+            if len(self.teams) == 0:
+                list_param = [self.date, event.type]
+            else:
+                list_param = [self.date, event.type, self.teams[0]]
+        elif len(self.players) == 1:
             list_param = [self.date, event.type, self.getPlayer1()]
-        if len(self.players == 2):
+        else:   # len(self.players) == 2:
             p = self.getPlayer1() + " ; " + self.getPlayer2()
             list_param = [self.date, event.type, p]
 
         csv_wr = csv.writer(f, delimiter='\t')
         csv_wr.writerow(list_param)
-
 
     def getPlayer1(self):
         return self.players[0]
