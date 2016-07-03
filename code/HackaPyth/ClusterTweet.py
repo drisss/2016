@@ -18,6 +18,8 @@ def print_cluster_tweets(tweets, match_fpath):
     match_basename = os.path.splitext(match_fname)[0]
     team_names = match_basename.lower().split('_')[:2]
 
+    # TODO: complete country name
+
     dir_team = team_names[0] + '_' + team_names[1]
     team_dirpath = os.path.join(clustered_tweets_dir, dir_team)
 

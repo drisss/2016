@@ -14,41 +14,59 @@ __author__ = 'driss'
 
 def print_tweets_annotation(match_dirpath):
 
-        fname_lst = [f for f in os.listdir(os.path.join(match_dirpath))]
+    match_fnames = [f for f in os.listdir(os.path.join(match_dirpath))]
 
-        for fname in fname_lst:
-            match_fpath = os.path.join(match_dirpath, fname)
+    for match_fname in match_fnames:
+        match_fpath = os.path.join(match_dirpath, match_fname)
 
-            players = read_tsv_player_file("list_players.tsv", match_fpath)
+        players = read_tsv_player_file("list_players.tsv", match_fpath)
 
-            events = read_tsv_events_file("../../Data/events/event_types.tsv")
+        events = read_tsv_events_file("../../Data/events/event_types.tsv")
 
-            only_team_events = [x for x in events
-                                if (x.getNbPlayers() == '0' and
-                                    x.getNbTeams() == '1')]
-            no_player_events = [x for x in events if x.getNbPlayers() == '0']
-            one_player_events = [x for x in events if x.getNbPlayers() == '1']
-            two_player_events = [x for x in events if x.getNbPlayers() == '2']
+        only_team_events = [x for x in events
+                            if (x.getNbPlayers() == '0' and
+                                x.getNbTeams() == '1')]
+        no_player_events = [x for x in events if x.getNbPlayers() == '0']
+        one_player_events = [x for x in events if x.getNbPlayers() == '1']
+        two_player_events = [x for x in events if x.getNbPlayers() == '2']
 
-            match_dirname = os.path.basename(os.path.join(match_dirpath))
-            match_basename = os.path.splitext(match_dirname)[0]
-            team_names = match_basename.lower().split('_')[:2]
+        no_player_tweets = \
+            read_tsv_tweet_file(os.path.join(match_dirpath, "tweets_with_no_player.tsv"), players)
+        only_team_tweets = \
+            read_tsv_tweet_file(os.path.join(match_dirpath, "tweets_with_a_team_no_player.tsv"), players)
+        one_player_tweets = \
+            read_tsv_tweet_file(os.path.join(match_dirpath, "tweets_with_single_players.tsv"), players)
+        two_players_tweets = \
+            read_tsv_tweet_file(os.path.join(match_dirpath, "tweets_with_two_players.tsv"), players)
 
-            tweets_with_no_player = \
-                read_tsv_tweet_file(os.path.join(match_dirpath, "tweets_with_no_player.tsv"), players)
-            tweets_with_a_team_no_player = \
-                read_tsv_tweet_file(os.path.join(match_dirpath, "tweets_with_a_team_no_player.tsv"), players)
-            tweets_with_single_players = \
-                read_tsv_tweet_file(os.path.join(match_dirpath,"tweets_with_single_players.tsv"),players)
-            tweets_with_two_players = \
-                read_tsv_tweet_file(os.path.join(match_dirpath,"tweets_with_two_players.tsv"),players)
+        # tweets_with_many_players = read_tsv_tweet_file(os.path.join(clusetered_tweet_fpath,match_fpath, "tweets_with_many_players.tsv"), players)
 
-            # tweets_with_many_players = read_tsv_tweet_file(os.path.join(clusetered_tweet_fpath,match_fpath,"tweets_with_many_players.tsv"),players)
+        smart(one_player_tweets, one_player_events)
 
-            for tweet in tweets_with_single_players:
-                    found_types = contain_event(tweet,one_player_events)
-                    if len(found_types) > 0:
-                        print(found_types)
+
+def smart(tweets, events):
+    for tweet in tweets:
+        found_types = contain_event(tweet, events)
+        if len(found_types) > 0:
+            print(found_types)
+
+
+def contain_event(tweet, events):
+    type_freq = dict()
+    tknzr = TweetTokenizer()
+    list_token = tknzr.tokenize(tweet.getText())
+
+    for event in events:
+        event_terms = event.getTerms()
+        # print(event_terms)
+        for term in event_terms:
+            if term in list_token:
+                if event.getType() not in type_freq.keys():
+                    type_freq[event.getType()] = 1
+                else:
+                    type_freq[event.getType()] = type_freq[
+                                                     event.getType()] + 1
+    return type_freq
 
 
 def parse_clustered_tweet(clustered_tweets_dir):
