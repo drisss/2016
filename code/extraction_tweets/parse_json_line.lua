@@ -12,7 +12,7 @@ for line in io.stdin:lines() do
   counter = counter + 1
   local plain = JSON:decode(line)
   if plain.text then
-    local processed_text = plain.text:gsub("\n", "  ")
+    local processed_text = plain.text:gsub("\n", "  "):gsub("\r", "")
     assert(not processed_text:match("\t"))
     assert(not processed_text:match("\n"))
     -- id time text retweet_count lang
