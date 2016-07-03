@@ -25,6 +25,12 @@ class Player:
     def getLastName(self):
         return self.lastname
 
+    def getTeam(self):
+        return self.team
+
+    def getFunction(self):
+        return self.function
+
 
     def getNickName(self):
         return self.nickname

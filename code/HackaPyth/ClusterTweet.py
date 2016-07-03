@@ -1,7 +1,8 @@
 import os
 from Tweet import Tweet
 from Player import Player
-from TSVreader import read_tsv_player_file, read_tsv_tweet_file
+from Event import Event
+from TSVreader import read_tsv_player_file, read_tsv_tweet_file, read_tsv_events_file
 import time
 from nltk.tokenize import TweetTokenizer
 
@@ -11,7 +12,7 @@ __author__ = 'driss'
 clustered_tweets_dir = "../../Data/clustered_tweets/"
 
 
-def print_cluster_tweets(tweets, match_fpath, event_dic):
+def print_cluster_tweets(tweets, match_fpath):
 
     match_fname = os.path.basename(match_fpath)
     match_basename = os.path.splitext(match_fname)[0]
@@ -38,8 +39,8 @@ def print_cluster_tweets(tweets, match_fpath, event_dic):
 
         elif len(tweet.players) == 1:
             tweets_with_single_players.append(tweet)
-            
-        elif len(tweet.players) == 2:
+
+        elif len(tweet.players) == 2 and (tweet.getPlayer1().getTeam() == tweet.getPlayer2().getTeam()):
             tweets_with_two_players.append(tweet)
         else:
             tweets_with_many_players.append(tweet)
@@ -57,14 +58,6 @@ def print_cluster_tweets(tweets, match_fpath, event_dic):
     print_tweets_in_file(tweets_with_many_players, os.path.join(team_dirpath,"tweets_with_many_players.tsv"))
 
 
-def contain_event(tweet, event_names):
-    tknzr = TweetTokenizer()
-    list_token = tknzr.tokenize(tweet)
-    for event in event_names:
-        if event in list_token:
-            return True
-    else:
-        return False
 
 
 def print_tweets_in_file(tweets, tweets_fpath):
@@ -75,12 +68,17 @@ def print_tweets_in_file(tweets, tweets_fpath):
 
 
 def parse_dir_match(match_dirpath):
+
+    events = read_tsv_events_file("../../Data/events/event_types.tsv")
+
+
     fname_lst = [f for f in os.listdir(match_dirpath)]
 
     print(fname_lst)
 
     for fname in fname_lst:
         match_fpath = os.path.join(match_dirpath, fname)
+
         players = read_tsv_player_file("list_players.tsv", match_fpath)
 
         tweets = read_tsv_tweet_file(match_fpath, players)
@@ -88,11 +86,13 @@ def parse_dir_match(match_dirpath):
         print_cluster_tweets(tweets, match_fpath)
 
 
+
 if __name__ == "__main__":
 
     start_time = time.time()
 
     parse_dir_match('../../Data/match')
+
 
     print("--- %s seconds ---" % (time.time() - start_time))
 

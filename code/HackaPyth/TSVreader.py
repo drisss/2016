@@ -4,6 +4,7 @@
 import os.path, codecs, io
 from Tweet import Tweet
 from Team import Team
+from Event import Event
 from Preprocess import token_name, get_players_in_tweet, get_teams_in_tweet, remove_accents
 
 from Player import Player
@@ -47,7 +48,7 @@ def read_tsv_tweet_file(tweet_file_path,players):
         tweet = Tweet(id, date, text, tweet_players, tweet_teams, nb_retweet, lang)
         tweets.append(tweet)
         # if nb_line > 100:    # DEBUG
-        #     break
+        #      break
 
     return tweets
 
@@ -80,3 +81,38 @@ def read_tsv_player_file(player_fpath, match_fpath):
             players.append(player)
 
     return players
+
+
+def read_tsv_events_file(events_fpath):
+    events = []
+    event_types = []
+
+    for line in open(events_fpath, 'r'):
+        terms = []
+
+        tab = line.strip('\n').lower().split('\t')
+
+        type = tab[0]
+        term = tab[1]
+        terms.append(term)
+        nb_players = tab[2]
+        nb_teams = tab[3]
+
+        if type not in event_types:
+            event = Event(type, terms, nb_players, nb_teams)
+            events.append(event)
+            event_types.append(type)
+        else:
+            event = getEventFromType(events,type)
+            event.addTerm(term)
+
+    return events
+
+def getEventFromType(events,type):
+    for event in events:
+        if event.getType() == type:
+            return event
+
+    return Event("event",[],0,0)
+
+

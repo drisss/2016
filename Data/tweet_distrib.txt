@@ -1,0 +1,6 @@
+
+('tweets_with_a_team_no_player:', 13720)
+('tweets_with_no_player :', 158653)
+('tweets_with_single_players: ', 12616)
+('tweets_with_two_players:', 2099)
+('tweets_with_many_players:', 181)
