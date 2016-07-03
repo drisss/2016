@@ -14,7 +14,7 @@ class Tweet:
         self.lang = lang
 
     def print_tweet(self):
-        print(self.date,self.text,self.players,self.teams)
+        print(self.date, self.text, self.players, self.teams)
         for player in self.players:
             player.print_player()
         for team in self.teams:
@@ -22,8 +22,8 @@ class Tweet:
 
     def print_in_tsv_file(self, f):
 
-        list_param =  [self.date, self.text, self.nb_retweet,self.lang]
-        csv_wr = csv.writer(f, "\t")
+        list_param = [self.date, self.text, self.nb_retweet, self.lang]
+        csv_wr = csv.writer(f, delimiter='\t')
         csv_wr.writerow(list_param)
 
     def getId(self):

@@ -20,3 +20,5 @@ code/HackaPyth/Player.pyc
 code/HackaPyth/TSVreader.pyc
 
 code/HackaPyth/Tweet.pyc
+
+*.tsv

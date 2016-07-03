@@ -6,12 +6,13 @@ from Team import Team
 class Player:
 
 
-    def __init__(self, firstname, lastname, function, team):
+    def __init__(self, firstname, lastname, function, team, nickname):
 
         self.firstname = firstname
         self.lastname = lastname
         self.function = function
         self.team = team
+        self.nickname = nickname
 
 
     def print_player(self):
@@ -24,3 +25,6 @@ class Player:
     def getLastName(self):
         return self.lastname
 
+
+    def getNickName(self):
+        return self.nickname
