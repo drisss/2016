@@ -60,8 +60,6 @@ def print_cluster_tweets(tweets, match_fpath):
     print_tweets_in_file(tweets_with_many_players, os.path.join(team_dirpath,"tweets_with_many_players.tsv"))
 
 
-
-
 def print_tweets_in_file(tweets, tweets_fpath):
 
     with open(tweets_fpath, 'w') as no_player_file:
@@ -73,8 +71,8 @@ def parse_dir_match(match_dirpath):
 
     events = read_tsv_events_file("../../Data/events/event_types.tsv")
 
-
-    fname_lst = [f for f in os.listdir(match_dirpath)]
+    fname_lst = [f for f in os.listdir(match_dirpath)
+                 if not f.startswith('.')]  # Remove hidden files
 
     print(fname_lst)
 
@@ -88,13 +86,11 @@ def parse_dir_match(match_dirpath):
         print_cluster_tweets(tweets, match_fpath)
 
 
-
 if __name__ == "__main__":
 
     start_time = time.time()
 
     parse_dir_match('../../Data/match')
-
 
     print("--- %s seconds ---" % (time.time() - start_time))
 

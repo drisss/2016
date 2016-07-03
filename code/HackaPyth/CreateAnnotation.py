@@ -14,7 +14,8 @@ __author__ = 'driss'
 
 def print_tweets_annotation(match_dirpath):
 
-    match_fnames = [f for f in os.listdir(os.path.join(match_dirpath))]
+    match_fnames = [f for f in os.listdir(os.path.join(match_dirpath))
+                    if not f.startswith('.')]   # Remove hidden files
 
     for match_fname in match_fnames:
         match_fpath = os.path.join(match_dirpath, match_fname)
@@ -31,13 +32,13 @@ def print_tweets_annotation(match_dirpath):
         two_player_events = [x for x in events if x.getNbPlayers() == '2']
 
         no_player_tweets = \
-            read_tsv_tweet_file(os.path.join(match_dirpath, "tweets_with_no_player.tsv"), players)
+            read_tsv_tweet_file(os.path.join(match_dirpath, "no_player_tweets.tsv"), players)
         only_team_tweets = \
-            read_tsv_tweet_file(os.path.join(match_dirpath, "tweets_with_a_team_no_player.tsv"), players)
+            read_tsv_tweet_file(os.path.join(match_dirpath, "only_team_tweets.tsv"), players)
         one_player_tweets = \
-            read_tsv_tweet_file(os.path.join(match_dirpath, "tweets_with_single_players.tsv"), players)
+            read_tsv_tweet_file(os.path.join(match_dirpath, "one_player_tweets.tsv"), players)
         two_players_tweets = \
-            read_tsv_tweet_file(os.path.join(match_dirpath, "tweets_with_two_players.tsv"), players)
+            read_tsv_tweet_file(os.path.join(match_dirpath, "two_players_tweets.tsv"), players)
 
         # tweets_with_many_players = read_tsv_tweet_file(os.path.join(clusetered_tweet_fpath,match_fpath, "tweets_with_many_players.tsv"), players)
 
@@ -46,9 +47,9 @@ def print_tweets_annotation(match_dirpath):
 
 def smart(tweets, events):
     for tweet in tweets:
-        found_types = contain_event(tweet, events)
-        if len(found_types) > 0:
-            print(found_types)
+        found_event_types = contain_event(tweet, events)
+        if len(found_event_types) > 0:
+            print(found_event_types)
 
 
 def contain_event(tweet, events):
@@ -64,14 +65,15 @@ def contain_event(tweet, events):
                 if event.getType() not in type_freq.keys():
                     type_freq[event.getType()] = 1
                 else:
-                    type_freq[event.getType()] = type_freq[
-                                                     event.getType()] + 1
+                    type_freq[event.getType()] += 1
+
     return type_freq
 
 
 def parse_clustered_tweet(clustered_tweets_dir):
 
-    dirname_lst = [f for f in os.listdir(clustered_tweets_dir)]
+    dirname_lst = [f for f in os.listdir(clustered_tweets_dir)
+                   if not f.startswith('.')]  # Remove hidden files
 
     print(dirname_lst)
 
@@ -79,20 +81,6 @@ def parse_clustered_tweet(clustered_tweets_dir):
         match_dirpath = os.path.join(clustered_tweets_dir, dirname)
 
         print_tweets_annotation(match_dirpath)
-
-
-def contain_event(tweet, events):
-    found_types = []
-    tknzr = TweetTokenizer()
-    list_token = tknzr.tokenize(tweet.getText())
-
-    for event in events:
-        event_terms = event.getTerms()
-        # print(event_terms)
-        for term in event_terms:
-            if term in list_token:
-                found_types.append(event.getType())
-    return found_types
 
 
 if __name__ == "__main__":
