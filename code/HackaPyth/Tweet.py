@@ -1,4 +1,4 @@
-import datetime
+import csv
 
 class Tweet:
 
@@ -15,7 +15,21 @@ class Tweet:
 
 
     def print_tweet(self):
-        print(self.id,self.date,self.text,self.players, self.teams, self.nb_retweet,self.lang)
+        print(self.date,self.text,self.players,self.teams)
+        for player in self.players:
+            player.print_player()
+        for team in self.teams:
+            team.print_team()
+
+    def print_in_tsv_file(self, tsv_file_path):
+
+
+        list_param =  [self.date, self.text, self.nb_retweet,self.lang]
+        f = open(tsv_file_path, "w")
+        csv_wr = csv.writer(f, "\t")
+        csv_wr.writerow(list_param)
+
+
 
     def getId(self):
         return self.__id

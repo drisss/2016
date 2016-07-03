@@ -11,7 +11,7 @@ class Team:
 
         self.name = name
 
-    def print_player(self):
+    def print_team(self):
         print(self.name)
 
     def getName(self):

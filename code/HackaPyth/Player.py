@@ -2,7 +2,7 @@ __author__ = 'driss'
 
 
 import datetime
-
+from Team import Team
 class Player:
 
 
