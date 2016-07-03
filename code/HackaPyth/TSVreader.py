@@ -1,6 +1,3 @@
-__author__ = 'driss'
-
-
 #!/usr/bin/python
 # coding: utf-8
 
@@ -11,6 +8,9 @@ from Preprocess import token_name, get_players_in_tweet, get_teams_in_tweet, rem
 
 from Player import Player
 
+__author__ = 'driss'
+
+
 def containTeam(teams, team_name):
     is_in = 0
     for current_team in teams:
@@ -18,7 +18,8 @@ def containTeam(teams, team_name):
             is_in = 1
     return is_in
 
-def read_tsv_tweet_file(tweet_file_path,players_file_path):
+
+def read_tsv_tweet_file(tweet_file_path, players_file_path):
     tweets = []
     teams = []
     players = read_tsv_player_file(players_file_path)
@@ -28,11 +29,11 @@ def read_tsv_tweet_file(tweet_file_path,players_file_path):
             team = Team(player.team)
             teams.append(team)
 
-    print("teams size: ", len(teams))
+    # print("teams size: ", len(teams))
 
     for line in open(tweet_file_path) :
         line = line.replace("\r\n","\n").replace('\r','\n')
-        print(line)
+        # print(line)
         tab = line.lower().split("\t")
         id = tab[0]
         date = tab[1]
