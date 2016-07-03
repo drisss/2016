@@ -4,7 +4,7 @@ local JSON  = require "JSON"
 local utils = require "toolbox"
 local date  = require "date"
 
-local GMT = +2
+local GMT = 2
 
 local counter = 1
 for line in io.stdin:lines() do
