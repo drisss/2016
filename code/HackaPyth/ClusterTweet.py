@@ -55,11 +55,6 @@ def print_cluster_tweets(tweets, match_fpath):
     print_tweets_in_file(tweets_with_many_players, os.path.join(team_dirpath,"tweets_with_many_players.tsv"))
 
 
-
-def contain_event(tweet, events):
-    
-
-
 def print_tweets_in_file(tweets, tweets_fpath):
 
     with open(tweets_fpath, 'w') as no_player_file:
