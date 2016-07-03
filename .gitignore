@@ -22,3 +22,5 @@ code/HackaPyth/TSVreader.pyc
 code/HackaPyth/Tweet.pyc
 
 *.tsv
+
+*.gz

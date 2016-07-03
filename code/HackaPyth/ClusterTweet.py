@@ -3,6 +3,7 @@ from Tweet import Tweet
 from Player import Player
 from TSVreader import read_tsv_player_file, read_tsv_tweet_file
 import time
+from nltk.tokenize import TweetTokenizer
 
 __author__ = 'driss'
 
@@ -10,7 +11,7 @@ __author__ = 'driss'
 clustered_tweets_dir = "../../Data/clustered_tweets/"
 
 
-def print_cluster_tweets(tweets, match_fpath):
+def print_cluster_tweets(tweets, match_fpath, event_dic):
 
     match_fname = os.path.basename(match_fpath)
     match_basename = os.path.splitext(match_fname)[0]
@@ -37,6 +38,7 @@ def print_cluster_tweets(tweets, match_fpath):
 
         elif len(tweet.players) == 1:
             tweets_with_single_players.append(tweet)
+            
         elif len(tweet.players) == 2:
             tweets_with_two_players.append(tweet)
         else:
@@ -53,6 +55,16 @@ def print_cluster_tweets(tweets, match_fpath):
     print_tweets_in_file(tweets_with_single_players, os.path.join(team_dirpath,"tweets_with_single_players.tsv"))
     print_tweets_in_file(tweets_with_two_players, os.path.join(team_dirpath,"tweets_with_two_players.tsv"))
     print_tweets_in_file(tweets_with_many_players, os.path.join(team_dirpath,"tweets_with_many_players.tsv"))
+
+
+def contain_event(tweet, event_names):
+    tknzr = TweetTokenizer()
+    list_token = tknzr.tokenize(tweet)
+    for event in event_names:
+        if event in list_token:
+            return True
+    else:
+        return False
 
 
 def print_tweets_in_file(tweets, tweets_fpath):
