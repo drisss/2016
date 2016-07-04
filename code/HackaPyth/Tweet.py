@@ -4,7 +4,7 @@ import re
 
 class Tweet:
 
-    def __init__(self, id, date, text, players, teams, nb_retweet,lang):
+    def __init__(self, id, date, text, players, teams, nb_retweet, lang):
 
         self.id = id
         self.date = date
@@ -29,17 +29,17 @@ class Tweet:
         csv_wr = csv.writer(f, delimiter='\t')
         csv_wr.writerow(list_param)
 
-    def print_in_tsv_annot(self, f, event):
+    def print_in_tsv_annot(self, f, t, type):
         if len(self.players) == 0:
             if len(self.teams) == 0:
-                list_param = [self.date, event.type]
+                list_param = [t, type]
             else:
-                list_param = [self.date, event.type, self.teams[0]]
+                list_param = [t, type, self.teams[0]]
         elif len(self.players) == 1:
-            list_param = [self.date, event.type, self.getPlayer1()]
-        else:   # len(self.players) == 2:
+            list_param = [t, type, self.getPlayer1()]
+        else:  # len(self.players) == 2:
             p = self.getPlayer1() + " ; " + self.getPlayer2()
-            list_param = [self.date, event.type, p]
+            list_param = [t, type, p]
 
         csv_wr = csv.writer(f, delimiter='\t')
         csv_wr.writerow(list_param)

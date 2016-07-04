@@ -5,11 +5,14 @@ import os
 from TSVreader import read_tsv_player_file, read_tsv_tweet_file, read_tsv_events_file
 import time
 from nltk.tokenize import TweetTokenizer
+import operator
+
+
+__author__ = 'driss'
 
 
 clustered_tweets_dir = "../../Data/clustered_tweets/"
-
-__author__ = 'driss'
+tknzr = TweetTokenizer()
 
 
 def print_tweets_annotation(match_dirpath):
@@ -42,39 +45,57 @@ def print_tweets_annotation(match_dirpath):
 
         # tweets_with_many_players = read_tsv_tweet_file(os.path.join(clusetered_tweet_fpath,match_fpath, "tweets_with_many_players.tsv"), players)
 
-        smart(one_player_tweets, one_player_events, win_size=4)
+        print(smart(one_player_tweets, one_player_events, win_size=4))
 
 
 def smart(tweets, events, win_size):
-    time_max = tweets[-1:].playtime_minutes
-
-    selected_tweets = []
+    last_tweet = tweets[-1]
+    time_max = last_tweet.playtime_minutes
 
     for t in range(time_max - win_size):
-        tweet = next(tweet for tweet in tweets
-                     if (t - win_size <= tweet.playtime_minutes <= t + win_size))
+        range_tweets = [tweet for tweet in tweets
+                        if (t - win_size <= tweet.playtime_minutes <= t + win_size)]
 
-        selected_tweets.append(tweet)
+        # print(tweet.playtime_minutes)
+        # print('t:', t)
+        # print('time_max:', time_max - win_size)
+        # print(range_tweets)
 
-    return len(selected_tweets)
+        # if contain_event(range_tweets, events, 100):
+        #     print(print_in_tsv_annot())
+
+        # try:
+        #     freq_lst.append(max(type_freq_dic, key=type_freq_dic.get))
+        # except ValueError:
+        #     freq_lst.append(0)
+        #
+        # return freq_lst
+
+        # return freq_lst.index(max(freq_lst))
 
 
-def contain_event(tweet, events):
-    type_freq = dict()
-    tknzr = TweetTokenizer()
-    list_token = tknzr.tokenize(tweet.getText())
+def contain_event(tweets, events, freq_thrsh):
+    type_freq_dic = dict()
 
-    for event in events:
-        event_terms = event.getTerms()
-        # print(event_terms)
-        for term in event_terms:
-            if term in list_token:
-                if event.getType() not in type_freq.keys():
-                    type_freq[event.getType()] = 1
-                else:
-                    type_freq[event.getType()] += 1
+    for tweet in tweets:
+        list_token = tknzr.tokenize(tweet.getText())
 
-    return type_freq
+        for event in events:
+            event_terms = event.getTerms()
+            # print(event_terms)
+            for term in event_terms:
+                if term in list_token:
+                    if event.getType() not in type_freq_dic.keys():
+                        type_freq_dic[event.getType()] = 1
+                    else:
+                        type_freq_dic[event.getType()] += 1
+
+    max_key = max(type_freq_dic.iteritems(), key=operator.itemgetter(1))[0]
+
+    if type_freq_dic[max_key] > freq_thrsh:
+        return max_key
+    else:
+        return None
 
 
 def parse_clustered_tweet(clustered_tweets_dir):
