@@ -57,7 +57,7 @@ def print_cluster_tweets(tweets, match_fpath):
     print_tweets_in_file(only_team_tweets, os.path.join(team_dirpath, "only_team_tweets.tsv"))
     print_tweets_in_file(one_player_tweets, os.path.join(team_dirpath, "one_player_tweets.tsv"))
     print_tweets_in_file(two_players_tweets, os.path.join(team_dirpath, "two_players_tweets.tsv"))
-    print_tweets_in_file(many_players_tweets, os.path.join(team_dirpath, "many_players_tweets.tsv"))
+    # print_tweets_in_file(many_players_tweets, os.path.join(team_dirpath, "many_players_tweets.tsv"))
 
 
 def print_tweets_in_file(tweets, tweets_fpath):

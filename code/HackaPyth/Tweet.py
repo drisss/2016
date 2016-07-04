@@ -1,4 +1,5 @@
 import csv
+import re
 
 
 class Tweet:
@@ -7,6 +8,8 @@ class Tweet:
 
         self.id = id
         self.date = date
+        self.daytime_minutes = int(date[0:2]) * 60 + int(date[3:5])
+        self.playtime_minutes = (int(date[0:2]) - 21) * 60 + int(date[3:5])
         self.text = text
         self.players = players
         self.teams = teams

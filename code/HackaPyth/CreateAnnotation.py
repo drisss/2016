@@ -42,14 +42,21 @@ def print_tweets_annotation(match_dirpath):
 
         # tweets_with_many_players = read_tsv_tweet_file(os.path.join(clusetered_tweet_fpath,match_fpath, "tweets_with_many_players.tsv"), players)
 
-        smart(one_player_tweets, one_player_events)
+        smart(one_player_tweets, one_player_events, win_size=4)
 
 
-def smart(tweets, events):
-    for tweet in tweets:
-        found_event_types = contain_event(tweet, events)
-        if len(found_event_types) > 0:
-            print(found_event_types)
+def smart(tweets, events, win_size):
+    time_max = tweets[-1:].playtime_minutes
+
+    selected_tweets = []
+
+    for t in range(time_max - win_size):
+        tweet = next(tweet for tweet in tweets
+                     if (t - win_size <= tweet.playtime_minutes <= t + win_size))
+
+        selected_tweets.append(tweet)
+
+    return len(selected_tweets)
 
 
 def contain_event(tweet, events):
